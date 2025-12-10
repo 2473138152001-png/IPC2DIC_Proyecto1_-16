@@ -1,68 +1,61 @@
-# Este archivo es el menú principal del proyecto.
-# Desde aquí se llama a todo lo demás.
-
-
-from src.parser.parser import ParserXML
-from src.core.procesador import ProcesadorSolicitudes
-from src.data_structures.cola_prioridad import ColaPrioridad
-
+# main.py
+# CloudSync Manager - Sistema de Nube
+# Menú principal según especificación del proyecto
 
 def mostrar_menu():
-    print("\n====== MENÚ PRINCIPAL ======")
-    print("1. Cargar archivo de DataCenters")
-    print("2. Cargar archivo de Solicitudes")
-    print("3. Cargar archivo de Instrucciones")
-    print("4. Salir")
-    print("============================")
+    print("\n===================================")
+    print("  CLOUDSYNC MANAGER - SISTEMA DE NUBE")
+    print("===================================")
+    print("1. Cargar Archivo XML")
+    print("2. Gestión de Centros de Datos")
+    print("3. Gestión de Máquinas Virtuales")
+    print("4. Gestión de Contenedores")
+    print("5. Gestión de Solicitudes")
+    print("6. Reportes Graphviz")
+    print("7. Generar XML de Salida")
+    print("8. Historial de Operaciones")
+    print("9. Salir")
+    print("===================================")
 
 
 def main():
-    parser = None
-    procesador = None
-    cola = ColaPrioridad()
-
-    lista_data_centers = None
-
     while True:
         mostrar_menu()
         opcion = input("Seleccione una opción: ")
 
         if opcion == "1":
-            ruta = input("Ingrese la ruta del archivo XML de DataCenters: ")
-
-            parser = ParserXML()
-            parser.cargar_archivo(ruta)
-            lista_data_centers = parser.obtener_data_centers()
-
-            procesador = ProcesadorSolicitudes(lista_data_centers)
-            procesador.asignar_cola(cola)
-
-            print("DataCenters cargados correctamente.")
+            ruta = input("Ingrese la ruta del archivo XML: ")
+            print("Archivo XML recibido:", ruta)
+            print("Carga de archivo en desarrollo...")
 
         elif opcion == "2":
-            if procesador is None:
-                print("Primero debe cargar los DataCenters.")
-                continue
-
-            ruta = input("Ingrese la ruta del archivo XML de Solicitudes: ")
-            procesador.cargar_solicitudes_xml(ruta)
+            print("Gestión de Centros de Datos en desarrollo.")
 
         elif opcion == "3":
-            if procesador is None:
-                print("Primero debe cargar los DataCenters.")
-                continue
-
-            ruta = input("Ingrese la ruta del archivo XML de Instrucciones: ")
-            procesador.cargar_solicitudes(ruta)
+            print("Gestión de Máquinas Virtuales en desarrollo.")
 
         elif opcion == "4":
-            print("Saliendo del programa...")
+            print("Gestión de Contenedores en desarrollo.")
+
+        elif opcion == "5":
+            print("Gestión de Solicitudes en desarrollo.")
+
+        elif opcion == "6":
+            print("Reportes Graphviz en desarrollo.")
+
+        elif opcion == "7":
+            print("Generación de XML de salida en desarrollo.")
+
+        elif opcion == "8":
+            print("Historial de operaciones en desarrollo.")
+
+        elif opcion == "9":
+            print("Saliendo del sistema...")
             break
 
         else:
             print("Opción inválida. Intente de nuevo.")
 
 
-# Punto de entrada del programa
 if __name__ == "__main__":
     main()
