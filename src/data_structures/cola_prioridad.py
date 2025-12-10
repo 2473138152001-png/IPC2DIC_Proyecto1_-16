@@ -1,52 +1,50 @@
-# Cola de prioridad básica.
-# Lo que hago es insertar según prioridad (mientras más pequeño el número,
-# más "prioridad" tiene).
-# No es la súper estructura, pero funciona para lo que necesito.
+# Esta es la cola de prioridad para las solicitudes que vienen en el XML.
 
-class NodoPrioridad:
-    def __init__(self, dato, prioridad):
-        self.dato = dato
-        self.prioridad = prioridad
-        self.sig = None
 
+class Solicitud:
+    # Esta clase solo la uso para guardar los datos de cada solicitud
+    def __init__(self, tipo, data):
+        self.tipo = tipo  
+        self.data = data  
+
+        # Asigno prioridades a lo simple:
+        # Deploy = prioridad alta (1)
+        # Backup = prioridad baja (2)
+        if tipo == "Deploy":
+            self.prioridad = 1
+        else:
+            self.prioridad = 2
 
 class ColaPrioridad:
+
     def __init__(self):
-        self.inicio = None
+        # Aquí voy guardando las solicitudes.
+        
+        self.lista = []
 
-    def encolar(self, dato, prioridad):
-        nuevo = NodoPrioridad(dato, prioridad)
+    def agregar_solicitud(self, tipo, data):
+        # Creo un objeto solicitud con lo que vino del XML
+        solicitud = Solicitud(tipo, data)
+        self.lista.append(solicitud)
 
-        # si está vacía
-        if self.inicio is None:
-            self.inicio = nuevo
-            return
+        # Ordeno la lista para que las solicitudes con menor número de prioridad
+        
+        self.lista.sort(key=lambda x: x.prioridad)
 
-        # si el nuevo tiene más prioridad que el primero
-        if prioridad < self.inicio.prioridad:
-            nuevo.sig = self.inicio
-            self.inicio = nuevo
-            return
+        print("Solicitud agregada:", tipo)
 
-        # si no, busco dónde meterlo
-        actual = self.inicio
-        while actual.sig is not None and actual.sig.prioridad <= prioridad:
-            actual = actual.sig
-
-        nuevo.sig = actual.sig
-        actual.sig = nuevo
-
-    def desencolar(self):
-        # devuelve el dato del primero
-        if self.inicio is None:
+    def sacar_siguiente(self):
+        # Saco la siguiente solicitud que tenga mayor prioridad
+        if len(self.lista) > 0:
+            return self.lista.pop(0)  
+        else:
             return None
 
-        dato = self.inicio.dato
-        self.inicio = self.inicio.sig
-        return dato
+    def esta_vacia(self):
+        return len(self.lista) == 0
 
-    def mostrar(self):
-        actual = self.inicio
-        while actual is not None:
-            print(f"{actual.dato} (prio {actual.prioridad})")
-            actual = actual.sig
+    def mostrar_cola(self):
+        # Esta función no es necesaria, pero la dejo por si quiero ver el contenido.
+        print("Contenido actual de la cola (en orden):")
+        for s in self.lista:
+            print("- Tipo:", s.tipo, "| Prioridad:", s.prioridad, "| Datos:", s.data)
