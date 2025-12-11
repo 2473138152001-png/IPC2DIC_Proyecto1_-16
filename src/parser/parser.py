@@ -1,103 +1,86 @@
-# Este archivo es para leer el XML.
-# La idea es que al final me devuelva una lista (simple) con todos los DataCenters cargados.
-
 import xml.etree.ElementTree as ET
-
-from src.models.data_center import DataCenter
-from src.models.maquina_virtual import MaquinaVirtual
-from src.models.contenedor import Contenedor
-from src.data_structures.lista_simple import ListaSimple
 
 
 class ParserXML:
-
     def __init__(self):
-        # Aquí voy a guardar los data centers que salgan del XML
-        self.lista_data_centers = ListaSimple()
+        # listas simples para guardar lo que se lea del XML
+        self.datacenters = []
+        self.maquinas_virtuales = []
+        self.contenedores = []
+        self.solicitudes = []
+        self.instrucciones = []
 
-    def cargar_archivo(self, ruta):
-        # Intento abrir el archivo. Si falla, solo aviso.
+    def cargar_archivo_xml(self, ruta):
         try:
-            arbol = ET.parse(ruta)
-            raiz = arbol.getroot()
-        except:
-            print("No se pudo leer el archivo XML. Revise la ruta o el formato.")
-            return
+            tree = ET.parse(ruta)
+            root = tree.getroot()
 
-        # Aquí empiezo a recorrer los DataCenter uno por uno
-        for dc in raiz.findall("DataCenter"):
-            id_dc = dc.get("id")
+            # validar etiqueta principal
+            if root.tag != "cloudSync":
+                print("El archivo no es un cloudSync válido.")
+                return False
 
-            # Los siguientes nodos los leo uno por uno
-            nodo_nombre = dc.find("Nombre")
-            if nodo_nombre != None:
-                nombre_dc = nodo_nombre.text
-            else:
-                nombre_dc = ""
+            configuracion = root.find("configuracion")
+            instrucciones = root.find("instrucciones")
 
-            nodo_ubic = dc.find("Ubicacion")
-            if nodo_ubic != None:
-                ubicacion_dc = nodo_ubic.text
-            else:
-                ubicacion_dc = ""
+            if configuracion is not None:
+                self._leer_configuracion(configuracion)
 
-            # Creo el objeto
-            data_center = DataCenter(id_dc, nombre_dc, ubicacion_dc)
+            if instrucciones is not None:
+                self._leer_instrucciones(instrucciones)
 
-            # Ahora voy con las máquinas virtuales
-            seccion_maquinas = dc.find("MaquinasVirtuales")
+            print("Archivo XML cargado correctamente.")
+            return True
 
-            if seccion_maquinas != None:
-                # Recorro cada VM
-                for vm in seccion_maquinas.findall("VM"):
-                    id_vm = vm.get("id")
+        except Exception as e:
+            print("Error al leer el archivo XML:", e)
+            return False
 
-                    nodo_nombre_vm = vm.find("Nombre")
-                    if nodo_nombre_vm != None:
-                        nombre_vm = nodo_nombre_vm.text
-                    else:
-                        nombre_vm = ""
+    # ----------------------------
+    # Métodos auxiliares
+    # ----------------------------
 
-                    nodo_so_vm = vm.find("SO")
-                    if nodo_so_vm != None:
-                        so_vm = nodo_so_vm.text
-                    else:
-                        so_vm = ""
+    def _leer_configuracion(self, configuracion):
+        # Leer centros de datos
+        centros = configuracion.find("centrosDatos")
+        if centros is not None:
+            for centro in centros:
+                self.datacenters.append({
+                    "id": centro.get("id"),
+                    "nombre": centro.get("nombre")
+                })
 
-                    # Creo la máquina virtual
-                    maquina = MaquinaVirtual(id_vm, nombre_vm, so_vm)
+        # Leer máquinas virtuales
+        maquinas = configuracion.find("maquinasVirtuales")
+        if maquinas is not None:
+            for vm in maquinas:
+                self.maquinas_virtuales.append({
+                    "id": vm.get("id"),
+                    "centro": vm.get("centroAsignado")
+                })
 
-                    # Ahora los contenedores
-                    seccion_conts = vm.find("Contenedores")
+                # leer contenedores de la VM
+                contenedores = vm.find("contenedores")
+                if contenedores is not None:
+                    for cont in contenedores:
+                        self.contenedores.append({
+                            "id": cont.get("id"),
+                            "vm": vm.get("id")
+                        })
 
-                    if seccion_conts != None:
-                        for cont in seccion_conts.findall("Contenedor"):
-                            id_cont = cont.get("id")
+        # Leer solicitudes
+        solicitudes = configuracion.find("solicitudes")
+        if solicitudes is not None:
+            for sol in solicitudes:
+                self.solicitudes.append({
+                    "id": sol.get("id"),
+                    "cliente": sol.findtext("cliente"),
+                    "tipo": sol.findtext("tipo"),
+                    "prioridad": sol.findtext("prioridad")
+                })
 
-                            nodo_nombre_cont = cont.find("Nombre")
-                            if nodo_nombre_cont != None:
-                                nombre_cont = nodo_nombre_cont.text
-                            else:
-                                nombre_cont = ""
-
-                            nodo_tipo_cont = cont.find("Tipo")
-                            if nodo_tipo_cont != None:
-                                tipo_cont = nodo_tipo_cont.text
-                            else:
-                                tipo_cont = ""
-
-                            # Creo el contenedor y lo agrego
-                            cont_obj = Contenedor(id_cont, nombre_cont, tipo_cont)
-                            maquina.agregar_contenedor(cont_obj)
-
-                    # Agrego la máquina al Data Center
-                    data_center.agregar_vm(maquina)
-
-            # Al final meto el Data Center completo en la lista
-            self.lista_data_centers.agregar(data_center)
-
-        print("Archivo XML cargado exitosamente (creo).")
-
-    def obtener_data_centers(self):
-        # Solo regreso la lista que ya llené
-        return self.lista_data_centers
+    def _leer_instrucciones(self, instrucciones):
+        for inst in instrucciones:
+            self.instrucciones.append({
+                "tipo": inst.get("tipo")
+            })

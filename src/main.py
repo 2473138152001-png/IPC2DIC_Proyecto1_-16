@@ -1,6 +1,7 @@
 # main.py
 # CloudSync Manager - Sistema de Nube
 # Menú principal según especificación del proyecto
+from src.parser.parser import ParserXML
 
 def mostrar_menu():
     print("\n===================================")
@@ -25,8 +26,18 @@ def main():
 
         if opcion == "1":
             ruta = input("Ingrese la ruta del archivo XML: ")
-            print("Archivo XML recibido:", ruta)
-            print("Carga de archivo en desarrollo...")
+
+            parser = ParserXML()
+
+            if parser.cargar_archivo_xml(ruta):
+                print("Datos cargados correctamente.")
+                print("Centros:", parser.datacenters)
+                print("VMs:", parser.maquinas_virtuales)
+                print("Solicitudes:", parser.solicitudes)
+                print("Instrucciones:", parser.instrucciones)
+            else:
+                print("No se pudo cargar el archivo.")
+
 
         elif opcion == "2":
             print("Gestión de Centros de Datos en desarrollo.")
