@@ -4,7 +4,6 @@
 
 from src.parser.parser import ParserXML
 
-
 def mostrar_menu():
     print("\n===================================")
     print("  CLOUDSYNC MANAGER - SISTEMA DE NUBE")
@@ -25,6 +24,7 @@ def main():
     parser = None          # aquí voy a guardar el parser
     datos_cargados = False # para saber si ya se cargó un XML
 
+
     while True:
         mostrar_menu()
         opcion = input("Seleccione una opción: ")
@@ -41,10 +41,12 @@ def main():
                 print("Centros:", parser.datacenters)
                 print("VMs:", parser.maquinas_virtuales)
                 print("Contenedores:", parser.contenedores)
+
                 print("Solicitudes:", parser.solicitudes)
                 print("Instrucciones:", parser.instrucciones)
             else:
                 print("No se pudo cargar el archivo.")
+
 
         elif opcion == "2":
             # Gestión de Centros de Datos (versión simple)

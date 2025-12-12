@@ -16,6 +16,7 @@ class ProcesadorSolicitudes:
 
     def procesar_solicitudes(self, cantidad):
         if self.cola_solicitudes is None:
+
             print("no se ha seleccionado ninguna cola de solicitudes")
             return
 
@@ -24,6 +25,7 @@ class ProcesadorSolicitudes:
             return
 
         print("Procesando", cantidad, "solicitudes")
+
 
         # Saco una por una
         for i in range(cantidad):
@@ -130,7 +132,6 @@ class ProcesadorSolicitudes:
             print("Solicitud leída del XML ->", tipo)
 
         print("Carga de solicitudes completada.")
-
     def procesar_backup(self, datos):
         # Según el PDF, un Backup crea una nueva VM en estado suspendido
         # y se asigna al data center con más recursos disponibles
@@ -146,8 +147,8 @@ class ProcesadorSolicitudes:
         mayor_cpu = -1
 
         while actual is not None:
-            dc = actual.dato
 
+            dc = actual.dato
             # Usamos solo CPU para comparar, de forma simple
             if dc.cpu_disponible > mayor_cpu:
                 mayor_cpu = dc.cpu_disponible
