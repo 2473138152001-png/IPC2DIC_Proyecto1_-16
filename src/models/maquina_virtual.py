@@ -6,10 +6,13 @@ class MaquinaVirtual:
         self.id = id
         self.nombre = nombre
         self.sistema_operativo = sistema_operativo
-        self.contenedores = ListaSimple()  
+        self.contenedores = ListaSimple()
+        self.cpu = 0
+        self.ram = 0
+        self.almacenamiento = 0
+        self.estado = "ACTIVA"
 
     def agregar_contenedor(self, contenedor):
-       
         self.contenedores.insertar_final(contenedor)
 
     def __str__(self):

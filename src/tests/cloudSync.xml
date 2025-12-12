@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cloudSync>
+    <configuracion>
+
+        <centrosDatos>
+            <centro id="DC001" nombre="DataCenter Principal">
+                <ubicacion>
+                    <pais>Guatemala</pais>
+                    <ciudad>Guatemala City</ciudad>
+                </ubicacion>
+                <capacidad>
+                    <cpu>64</cpu>
+                    <ram>256</ram>
+                    <almacenamiento>500</almacenamiento>
+                </capacidad>
+            </centro>
+
+            <centro id="DC002" nombre="DataCenter Respaldo">
+                <ubicacion>
+                    <pais>Guatemala</pais>
+                    <ciudad>Antigua Guatemala</ciudad>
+                </ubicacion>
+                <capacidad>
+                    <cpu>32</cpu>
+                    <ram>128</ram>
+                    <almacenamiento>300</almacenamiento>
+                </capacidad>
+            </centro>
+        </centrosDatos>
+
+        <maquinasVirtuales>
+            <vm id="VM001" centroAsignado="DC001">
+                <sistemaOperativo>Ubuntu 22.04 LTS</sistemaOperativo>
+                <recursos>
+                    <cpu>8</cpu>
+                    <ram>16</ram>
+                    <almacenamiento>100</almacenamiento>
+                </recursos>
+                <ip>192.168.1.10</ip>
+                <contenedores>
+                    <contenedor id="CNT001">
+                        <nombre>WebServer</nombre>
+                        <imagen>nginx:latest</imagen>
+                        <recursos>
+                            <cpu>30</cpu>
+                            <ram>512</ram>
+                        </recursos>
+                        <puerto>8080</puerto>
+                    </contenedor>
+                </contenedores>
+            </vm>
+
+            <vm id="VM002" centroAsignado="DC001">
+                <sistemaOperativo>Windows Server 2022</sistemaOperativo>
+                <recursos>
+                    <cpu>4</cpu>
+                    <ram>8</ram>
+                    <almacenamiento>80</almacenamiento>
+                </recursos>
+                <ip>192.168.1.11</ip>
+                <contenedores>
+                    <contenedor id="CNT002">
+                        <nombre>Database</nombre>
+                        <imagen>mysql:8.0</imagen>
+                        <recursos>
+                            <cpu>50</cpu>
+                            <ram>1024</ram>
+                        </recursos>
+                        <puerto>3306</puerto>
+                    </contenedor>
+                </contenedores>
+            </vm>
+        </maquinasVirtuales>
+
+        <solicitudes>
+            <solicitud id="REQ001">
+                <cliente>Empresa Demo</cliente>
+                <tipo>Deploy</tipo>
+                <prioridad>8</prioridad>
+                <recursos>
+                    <cpu>4</cpu>
+                    <ram>8</ram>
+                    <almacenamiento>50</almacenamiento>
+                </recursos>
+                <tiempoEstimado>30</tiempoEstimado>
+            </solicitud>
+
+            <solicitud id="REQ002">
+                <cliente>Cliente Prueba</cliente>
+                <tipo>Backup</tipo>
+                <prioridad>5</prioridad>
+                <recursos>
+                    <cpu>2</cpu>
+                    <ram>4</ram>
+                    <almacenamiento>100</almacenamiento>
+                </recursos>
+                <tiempoEstimado>60</tiempoEstimado>
+            </solicitud>
+        </solicitudes>
+
+    </configuracion>
+
+    <instrucciones>
+        <instruccion tipo="crearVM">
+            <id>VM003</id>
+            <centro>DC002</centro>
+            <so>Debian 11</so>
+            <cpu>4</cpu>
+            <ram>8</ram>
+            <almacenamiento>60</almacenamiento>
+        </instruccion>
+
+        <instruccion tipo="migrarVM">
+            <vmId>VM001</vmId>
+            <centroOrigen>DC001</centroOrigen>
+            <centroDestino>DC002</centroDestino>
+        </instruccion>
+
+        <instruccion tipo="procesarSolicitudes">
+            <cantidad>2</cantidad>
+        </instruccion>
+    </instrucciones>
+
+</cloudSync>
