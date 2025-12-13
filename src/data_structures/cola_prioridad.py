@@ -1,50 +1,60 @@
 # Esta es la cola de prioridad para las solicitudes que vienen en el XML.
-
-
-class Solicitud:
-    # Esta clase solo la uso para guardar los datos de cada solicitud
-    def __init__(self, tipo, data):
-        self.tipo = tipo  
-        self.data = data  
-
-        # Asigno prioridades a lo simple:
-        # Deploy = prioridad alta (1)
-        # Backup = prioridad baja (2)
-        if tipo == "Deploy":
-            self.prioridad = 1
-        else:
-            self.prioridad = 2
+class NodoCola:
+    def __init__(self, solicitud):
+        self.solicitud= solicitud
+        self.siguiente= None
+        
 
 class ColaPrioridad:
 
     def __init__(self):
         # Aquí voy guardando las solicitudes.
         
-        self.lista = []
+        self.inicio=None
 
-    def agregar_solicitud(self, tipo, data):
+    def agregar_solicitud(self, solicitud):
         # Creo un objeto solicitud con lo que vino del XML
-        solicitud = Solicitud(tipo, data)
-        self.lista.append(solicitud)
+        nuevo = NodoCola(solicitud)
+        if self.inicio is None or solicitud.prioridad< self.inicio.solicitud.prioridad:
+            nuevo.siguiente= self.inicio
+            self.inicio = nuevo
+            return
+        actual = self.inicio
+        while actual.siguiente is not None and actual.siguiente.solicitud.prioridad <= solicitud.prioridad:
+            actual= actual.siguiente
+            
+        nuevo.siguiente = actual.siguiente
+        actual.siguiente = nuevo
 
-        # Ordeno la lista para que las solicitudes con menor número de prioridad
         
-        self.lista.sort(key=lambda x: x.prioridad)
-
-        print("Solicitud agregada:", tipo)
+        
+        
 
     def sacar_siguiente(self):
-        # Saco la siguiente solicitud que tenga mayor prioridad
-        if len(self.lista) > 0:
-            return self.lista.pop(0)  
-        else:
-            return None
+        
+        if self.inicio is None:
+            
+            return None 
+        solicitud = self.inicio.solicitud
+        self.inicio = self.inicio.siguiente
+        return solicitud
 
     def esta_vacia(self):
-        return len(self.lista) == 0
+        return self.inicio is None
 
     def mostrar_cola(self):
-        # Esta función no es necesaria, pero la dejo por si quiero ver el contenido.
         print("Contenido actual de la cola (en orden):")
-        for s in self.lista:
-            print("- Tipo:", s.tipo, "| Prioridad:", s.prioridad, "| Datos:", s.data)
+
+        actual = self.inicio
+        if actual is None:
+            print("La cola está vacía")
+            return
+
+        while actual is not None:
+            s = actual.solicitud
+            print(
+                "- ID:", s.id,
+                "| Tipo:", s.tipo,
+                "| Prioridad:", s.prioridad
+            )
+            actual = actual.siguiente

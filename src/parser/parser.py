@@ -45,11 +45,21 @@ class ParserXML:
         centros = configuracion.find("centrosDatos")
         if centros is not None:
             for centro in centros:
-                self.datacenters.append({
-                    "id": centro.get("id"),
-                    "nombre": centro.get("nombre")
-                })
+                pais= centro.find("ubicacion/pais").text
+                ciudad = centro.find("ubicacion/ciudad").text
 
+                cpu = int(centro.find("capacidad/cpu").text)
+                ram = int(centro.find("capacidad/ram").text)
+                almacenamiento = int(centro.find("capacidad/almacenamiento").text)
+                self.datacenters.append({
+                "id": centro.get("id"),
+                "nombre": centro.get("nombre"),
+                "ubicacion": f"{ciudad}, {pais}",
+                "cpu_total": cpu,
+                "ram_total": ram,
+                "alm_total": almacenamiento
+            })
+        
         # Leer máquinas virtuales
         maquinas = configuracion.find("maquinasVirtuales")
         if maquinas is not None:

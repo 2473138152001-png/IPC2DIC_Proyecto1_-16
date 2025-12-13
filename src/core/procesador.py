@@ -1,5 +1,7 @@
 # Este archivo es el procesador de solicitudes e instrucciones.
 import xml.etree.ElementTree as ET
+from src.models.solicitud import Solicitud
+
 
 class ProcesadorSolicitudes:
 
@@ -18,11 +20,16 @@ class ProcesadorSolicitudes:
         if self.cola_solicitudes is None:
 
             print("no se ha seleccionado ninguna cola de solicitudes")
-            return
+            return 0, 0, 0
 
         if cantidad <= 0:
             print("error, la cantidad debe ser mayor a 0")
-            return
+            return 0, 0, 0
+        
+        procesadas = 0
+        completas = 0
+        fallidas = 0
+        
 
         print("Procesando", cantidad, "solicitudes")
 
@@ -32,48 +39,51 @@ class ProcesadorSolicitudes:
             solicitud = self.cola_solicitudes.sacar_siguiente()
 
             if solicitud is None:
-                print("La cola ya no tiene más solicitudes.")
+               # print("La cola ya no tiene más solicitudes.")
                 break
+            
+            procesadas+=1
 
             tipo = solicitud.tipo     
-            datos = solicitud.data    
+               
 
-            print("Solicitud procesada:", tipo)
+            
+            try:
 
-            if tipo == "Deploy":
-                self.procesar_deploy(datos)
+                if tipo == "Deploy":
+                    self.procesar_deploy(solicitud)
+                    completas+=1
 
-            elif tipo == "Backup":
-                self.procesar_backup(datos)
+                elif tipo == "Backup":
+                    self.procesar_backup(solicitud)
+                    completas+=1
 
-            else:
-                print("Solicitud desconocida:", tipo)
-
+                else:
+                    print("Solicitud desconocida:", tipo)
+                    fallidas+=1
+            except Exception as e:
+                #print("ERROR REAL:", e)
+                fallidas +=1
+                
         print("Fin del procesamiento de solicitudes.")
+        return procesadas, completas, fallidas
 
     
-    def procesar_deploy(self, datos):
-        id_vm = datos.get("idVM", "")
-        id_dc = datos.get("dataCenter", "")
-        cpu = datos.get("cpu", "")
-        ram = datos.get("ram", "")
-        almacenamiento = datos.get("almacenamiento", "")
+    def procesar_deploy(self, solicitud):
 
-        # Primero busco el DataCenter donde se va a crear la VM
-        data_center = None
-        actual = self.data_centers.inicio  # porque es lista simple
 
-        while actual is not None:
-            if actual.dato.id == id_dc:
-                data_center = actual.dato
-                break
-            actual = actual.siguiente
+        # Valores simples (no parseamos nada)
+        id_vm = "VM_" + str(solicitud.id)
+        id_dc = "DC001"   # por simplicidad, primer DataCenter
 
-        if data_center is None:
-            print("No se encontró el DataCenter:", id_dc)
+        # Busco el primer DataCenter disponible
+        actual = self.data_centers.inicio
+        if actual is None:
+            print("No hay DataCenters registrados")
             return
 
-        # Ya tengo el DataCenter, ahora creo la VM.
+        data_center = actual.dato
+
         try:
             from src.models.maquina_virtual import MaquinaVirtual
         except:
@@ -82,20 +92,19 @@ class ProcesadorSolicitudes:
 
         nueva_vm = MaquinaVirtual(
             id_vm,
-            "VM_" + id_vm,        # Nombre simple estilo estudiante
-            "SO_Desconocido"      # Por ahora no viene en la solicitud
+            "VM_" + id_vm,
+            "SO_Desconocido"
         )
 
-        # También le asigno los recursos (como atributos)
-        nueva_vm.cpu = cpu
-        nueva_vm.ram = ram
-        nueva_vm.almacenamiento = almacenamiento
+        # Recursos básicos (valores simples)
+        nueva_vm.cpu = 1
+        nueva_vm.ram = 1
+        nueva_vm.almacenamiento = 10
 
-        # Ahora agrego la VM a la lista del DataCenter
         data_center.agregar_vm(nueva_vm)
 
-        print("VM creada por solicitud Deploy ->", id_vm,
-              "en DataCenter:", id_dc)
+        
+
             
     def cargar_solicitudes_xml(self, ruta):
         # Este método sirve para leer las solicitudes (Deploy / Backup)
@@ -113,80 +122,55 @@ class ProcesadorSolicitudes:
             return
 
         # Recorro cada solicitud del XML
-        for solicitud in raiz.findall("Solicitud"):
+        for nodo in raiz.findall("Solicitud"):
 
-            tipo = solicitud.get("tipo")  # Deploy o Backup
-
-            # Aqui voy a guardar toda la información de la solicitud
-            datos = {}
-
-            # Recorro los hijos (idVM, cpu, ram, dataCenter, etc.)
-            for nodo in solicitud:
-                etiqueta = nodo.tag
-                valor = nodo.text
-                datos[etiqueta] = valor
-
-            # Ya tengo tipo y datos, ahora lo mando a la cola
-            self.cola_solicitudes.agregar_solicitud(tipo, datos)
-
-            print("Solicitud leída del XML ->", tipo)
+            id_sol = nodo.get("id")  
+            tipo = nodo.get("tipo")
+            prioridad = nodo.get("prioridad")
+            descripcion=""
+            for hijo in nodo:
+                descripcion+=hijo.tag + ": "+ hijo.text + " | "
+            solicitud = Solicitud(id_sol, tipo, prioridad, descripcion)
+            self.cola_solicitudes.agregar_solicitud(solicitud)
+            print("Solicitud leida del XML ", solicitud)
 
         print("Carga de solicitudes completada.")
-    def procesar_backup(self, datos):
-        # Según el PDF, un Backup crea una nueva VM en estado suspendido
-        # y se asigna al data center con más recursos disponibles
+        
+    def procesar_backup(self, solicitud):
 
-        id_vm = datos.get("idVM", "")
-        cpu = datos.get("cpu", "0")
-        ram = datos.get("ram", "0")
-        almacenamiento = datos.get("almacenamiento", "0")
+        
 
-        # Buscar el DataCenter con más recursos disponibles
+        # Busco el primer DataCenter disponible
         actual = self.data_centers.inicio
-        data_center_elegido = None
-        mayor_cpu = -1
-
-        while actual is not None:
-
-            dc = actual.dato
-            # Usamos solo CPU para comparar, de forma simple
-            if dc.cpu_disponible > mayor_cpu:
-                mayor_cpu = dc.cpu_disponible
-                data_center_elegido = dc
-
-            actual = actual.siguiente
-
-        if data_center_elegido is None:
-            print("No se encontró ningún DataCenter disponible para Backup.")
+        if actual is None:
+            print("No hay DataCenters registrados")
             return
 
-        # Importamos la clase MaquinaVirtual
+        data_center = actual.dato
+
         try:
             from src.models.maquina_virtual import MaquinaVirtual
         except:
-            print("Error importando MaquinaVirtual para Backup.")
+            print("Error importando MaquinaVirtual")
             return
 
         # Creamos la VM en estado suspendido
+        id_vm = "VM_Backup_" + str(solicitud.id)
+
         nueva_vm = MaquinaVirtual(
             id_vm,
             "VM_Backup_" + id_vm,
             "Sistema_Backup"
         )
 
-        # Asignamos recursos (de forma sencilla)
-        nueva_vm.cpu = cpu
-        nueva_vm.ram = ram
-        nueva_vm.almacenamiento = almacenamiento
         nueva_vm.estado = "SUSPENDIDA"
+        nueva_vm.cpu = 1
+        nueva_vm.ram = 1
+        nueva_vm.almacenamiento = 10
 
-        # Agregamos la VM al DataCenter elegido
-        data_center_elegido.agregar_vm(nueva_vm)
+        data_center.agregar_vm(nueva_vm)
 
-        print("Backup creado correctamente:")
-        print("VM:", id_vm)
-        print("Estado: SUSPENDIDA")
-        print("Asignada al DataCenter:", data_center_elegido.id)
+
 
     def cargar_solicitudes(self, ruta_xml):
         try:
@@ -200,7 +184,7 @@ class ProcesadorSolicitudes:
         for instruccion in raiz.findall("instruccion"):
             tipo = instruccion.get("tipo")
 
-            print("Leyendo instrucción:", tipo)
+           
 
             # Dependiendo del tipo llamo a una función
             if tipo == "crearVM":
@@ -220,8 +204,8 @@ class ProcesadorSolicitudes:
                 else:
                     cantidad = 0
 
-                self.procesar_solicitudes(cantidad)
-
+                procesadas, completadas, fallidas =  self.procesar_solicitudes(cantidad)
+                print(f"Procesadas: {procesadas}, Completadas: {completadas}, Fallidas: {fallidas}")
             else:
                 print("Instrucción desconocida:", tipo)
 

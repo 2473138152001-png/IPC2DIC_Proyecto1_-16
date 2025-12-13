@@ -27,8 +27,19 @@ class ListaSimple:
         self.agregar(dato)
 
     def mostrar(self):
-        # recorre e imprime, nada complicado
+        
         actual = self.inicio
         while actual is not None:
             print(actual.dato)
             actual = actual.siguiente
+            
+    def contar(self):
+        contador = 0
+        actual = self.inicio
+
+        while actual is not None:
+            contador += 1
+            actual = actual.siguiente
+
+        return contador
+
