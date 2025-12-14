@@ -64,9 +64,18 @@ class ParserXML:
         maquinas = configuracion.find("maquinasVirtuales")
         if maquinas is not None:
             for vm in maquinas:
+                cpu = int(vm.find("recursos/cpu").text)
+                ram = int(vm.find("recursos/ram").text)
+                almacenamiento= int(vm.find("recursos/almacenamiento").text)
                 self.maquinas_virtuales.append({
                     "id": vm.get("id"),
-                    "centro": vm.get("centroAsignado")
+                    "centro": vm.get("centroAsignado"),
+                    "so": vm.findtext("sistemaOperativo"),
+                    "cpu": cpu,
+                    "ram": ram,
+                    "almacenamiento": almacenamiento,
+                    "ip": vm.findtext("ip"),
+                    "estado": "Activa"
                 })
 
                 # leer contenedores de la VM
@@ -75,7 +84,9 @@ class ParserXML:
                     for cont in contenedores:
                         self.contenedores.append({
                             "id": cont.get("id"),
-                            "vm": vm.get("id")
+                            "vm": vm.get("id"),
+                            "nombre": cont.findtext("nombre"),
+                            "imagen": cont.findtext("imagen")
                         })
 
         # Leer solicitudes

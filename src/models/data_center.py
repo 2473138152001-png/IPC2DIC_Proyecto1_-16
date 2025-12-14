@@ -10,8 +10,13 @@ class DataCenter:
         self.nombre = nombre
         self.ubicacion = ubicacion
         self.maquinas_virtuales = ListaSimple()
-        self.cpu_disponible = 0
+        self.cpu_total = 0
+        self.ram_total = 0
+        self.alm_total = 0
 
+        self.cpu_usado = 0
+        self.ram_usado = 0
+        self.alm_usado = 0
     def agregar_vm(self, vm):
         self.maquinas_virtuales.insertar_final(vm)
 
