@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<historialOperaciones>
+  <timestamp>2025-12-15T11:12:02.052551</timestamp>
+  <operaciones>
+    <operacion>
+      <fecha>2025-12-15T11:11:01.327037</fecha>
+      <action>CARGA_XML</action>
+      <detalles>Se cargó el archivo: C:\Users\macoe\OneDrive\Documentos\python\progra2Vaqueros\IPC2DIC_Proyecto1_-16\src\tests\cloudSync.xml</detalles>
+      </operacion>
+    <operacion>
+      <fecha>2025-12-15T11:11:01.327037</fecha>
+      <action>INSTRUCCION</action>
+      <detalles>crearVM ejecutada (mensaje)</detalles>
+      </operacion>
+    <operacion>
+      <fecha>2025-12-15T11:11:01.328034</fecha>
+      <action>INSTRUCCION</action>
+      <detalles>migrarVM ejecutada (mensaje)</detalles>
+      </operacion>
+    <operacion>
+      <fecha>2025-12-15T11:11:01.329032</fecha>
+      <action>PROCESAR_SOLICITUDES</action>
+      <detalles>Cantidad:2 | Proc:2 Comp:2 Fall:0</detalles>
+      </operacion>
+    </operaciones>
+  </historialOperaciones>

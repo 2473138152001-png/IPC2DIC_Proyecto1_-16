@@ -1,0 +1,15 @@
+digraph CloudSync {
+rankdir=LR;
+labelloc="t";
+label="Reporte: Contenedores de la VM VM001";
+fontsize=18;
+node [shape=box];
+edge [arrowhead=vee];
+
+DC_DC001 [shape=folder, label="Centro DC001\nDataCenter Principal"];
+VM_VM001 [shape=box3d, label="VM VM001\nSO: Ubuntu 22.04 LTS\nEstado: Activa"];
+DC_DC001 -> VM_VM001;
+CT_CNT001 [shape=component, label="CT CNT001\nWebServer\nnginx:latest\nEstado: Activo"];
+VM_VM001 -> CT_CNT001;
+
+}

@@ -1,0 +1,11 @@
+digraph CloudSync {
+rankdir=LR;
+labelloc="t";
+label="Reporte: Cola de Solicitudes (por prioridad)";
+fontsize=18;
+node [shape=box];
+edge [arrowhead=vee];
+
+X [shape=box, label="La cola está vacía o no existe"];
+
+}

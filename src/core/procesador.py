@@ -6,77 +6,48 @@ from src.models.solicitud import Solicitud
 class ProcesadorSolicitudes:
 
     def __init__(self, lista_data_centers):
-        # Esta lista viene del parser
         self.data_centers = lista_data_centers
-
-        # Aquí voy a conectar la cola de prioridad que hicimos
         self.cola_solicitudes = None
 
     def asignar_cola(self, cola):
-        # Simplemente guardo la cola que me pasen
         self.cola_solicitudes = cola
 
     def procesar_solicitudes(self, cantidad):
         if self.cola_solicitudes is None:
-
             print("no se ha seleccionado ninguna cola de solicitudes")
             return 0, 0, 0
-
         if cantidad <= 0:
             print("error, la cantidad debe ser mayor a 0")
             return 0, 0, 0
-        
         procesadas = 0
         completas = 0
         fallidas = 0
-        
-
         print("Procesando", cantidad, "solicitudes")
-
-
-        # Saco una por una
         for i in range(cantidad):
             solicitud = self.cola_solicitudes.sacar_siguiente()
 
             if solicitud is None:
-               # print("La cola ya no tiene más solicitudes.")
+                print("La cola ya no tiene más solicitudes.")
                 break
-            
             procesadas+=1
-
             tipo = solicitud.tipo     
-               
-
-            
             try:
-
                 if tipo == "Deploy":
                     self.procesar_deploy(solicitud)
                     completas+=1
-
                 elif tipo == "Backup":
                     self.procesar_backup(solicitud)
                     completas+=1
-
                 else:
                     print("Solicitud desconocida:", tipo)
                     fallidas+=1
             except Exception as e:
-                #print("ERROR REAL:", e)
-                fallidas +=1
-                
+                fallidas +=1    
         print("Fin del procesamiento de solicitudes.")
         return procesadas, completas, fallidas
-
-    
     def procesar_deploy(self, solicitud):
-
-
-        # Valores simples (no parseamos nada)
         id_vm = "VM_" + str(solicitud.id)
-        id_dc = "DC001"   # por simplicidad, primer DataCenter
-
-        # Busco el primer DataCenter disponible
+        id_dc = "DC001"
         actual = self.data_centers.inicio
         if actual is None:
             print("No hay DataCenters registrados")
@@ -95,35 +66,25 @@ class ProcesadorSolicitudes:
             "VM_" + id_vm,
             "SO_Desconocido"
         )
-
-        # Recursos básicos (valores simples)
         nueva_vm.cpu = 1
         nueva_vm.ram = 1
         nueva_vm.almacenamiento = 10
-
         data_center.agregar_vm(nueva_vm)
 
         
 
             
     def cargar_solicitudes_xml(self, ruta):
-        # Este método sirve para leer las solicitudes (Deploy / Backup)
-        # y meterlas a la cola de prioridad.
-
         if self.cola_solicitudes is None:
-            print("No se ha asignado una cola de prioridad.")
+            print("No se ha asignado una cola de prioridad")
             return
-
         try:
             arbol = ET.parse(ruta)
             raiz = arbol.getroot()
         except:
             print("No se pudo leer el archivo de solicitudes.")
             return
-
-        # Recorro cada solicitud del XML
         for nodo in raiz.findall("Solicitud"):
-
             id_sol = nodo.get("id")  
             tipo = nodo.get("tipo")
             prioridad = nodo.get("prioridad")
@@ -133,28 +94,18 @@ class ProcesadorSolicitudes:
             solicitud = Solicitud(id_sol, tipo, prioridad, descripcion)
             self.cola_solicitudes.agregar_solicitud(solicitud)
             print("Solicitud leida del XML ", solicitud)
-
-        print("Carga de solicitudes completada.")
-        
+        print("Carga de solicitudes completada.") 
     def procesar_backup(self, solicitud):
-
-        
-
-        # Busco el primer DataCenter disponible
         actual = self.data_centers.inicio
         if actual is None:
             print("No hay DataCenters registrados")
             return
-
         data_center = actual.dato
-
         try:
             from src.models.maquina_virtual import MaquinaVirtual
         except:
             print("Error importando MaquinaVirtual")
             return
-
-        # Creamos la VM en estado suspendido
         id_vm = "VM_Backup_" + str(solicitud.id)
 
         nueva_vm = MaquinaVirtual(
@@ -167,11 +118,7 @@ class ProcesadorSolicitudes:
         nueva_vm.cpu = 1
         nueva_vm.ram = 1
         nueva_vm.almacenamiento = 10
-
         data_center.agregar_vm(nueva_vm)
-
-
-
     def cargar_solicitudes(self, ruta_xml):
         try:
             arbol = ET.parse(ruta_xml)
@@ -179,22 +126,13 @@ class ProcesadorSolicitudes:
         except:
             print("No se pudo leer el archivo de solicitudes.")
             return
-
-        # Recorro cada instrucción
         for instruccion in raiz.findall("instruccion"):
             tipo = instruccion.get("tipo")
-
-           
-
-            # Dependiendo del tipo llamo a una función
             if tipo == "crearVM":
                 self.crear_vm(instruccion)
-
             elif tipo == "migrarVM":
                 self.migrar_vm(instruccion)
-
-            elif tipo == "procesarSolicitudes":
-                
+            elif tipo == "procesarSolicitudes": 
                 cantidad_nodo = instruccion.find("cantidad")
                 if cantidad_nodo is not None:
                     try:
@@ -208,33 +146,22 @@ class ProcesadorSolicitudes:
                 print(f"Procesadas: {procesadas}, Completadas: {completadas}, Fallidas: {fallidas}")
             else:
                 print("Instrucción desconocida:", tipo)
-
     def crear_vm(self, nodo):
-        # Este método crea una VM directamente desde una instrucción
-        # No pasa por la cola, se ejecuta de inmediato
-
-        # Leo los datos del XML
         centro_nodo = nodo.find("centro")
         vmid_nodo = nodo.find("vmId")
         cpu_nodo = nodo.find("cpu")
         ram_nodo = nodo.find("ram")
         alm_nodo = nodo.find("almacenamiento")
-
         if centro_nodo is None or vmid_nodo is None:
             print("La instrucción crearVM está incompleta.")
             return
-
         id_dc = centro_nodo.text
         id_vm = vmid_nodo.text
-
         cpu = cpu_nodo.text if cpu_nodo is not None else "0"
         ram = ram_nodo.text if ram_nodo is not None else "0"
         almacenamiento = alm_nodo.text if alm_nodo is not None else "0"
-
-        # Busco el DataCenter donde se va a crear la VM
         actual = self.data_centers.inicio
         data_center = None
-
         while actual is not None:
             if actual.dato.id == id_dc:
                 data_center = actual.dato
@@ -244,27 +171,19 @@ class ProcesadorSolicitudes:
         if data_center is None:
             print("No se encontró el DataCenter:", id_dc)
             return
-
-        # Importo la clase MaquinaVirtual
         try:
             from src.models.maquina_virtual import MaquinaVirtual
         except:
             print("Error al importar MaquinaVirtual.")
             return
-
-        # Creo la VM
         nueva_vm = MaquinaVirtual(
             id_vm,
             "VM_" + id_vm,
             "SO_Desconocido"
         )
-
-        # Asigno los recursos
         nueva_vm.cpu = cpu
         nueva_vm.ram = ram
         nueva_vm.almacenamiento = almacenamiento
-
-        # Agrego la VM al DataCenter
         data_center.agregar_vm(nueva_vm)
 
         print("VM creada correctamente:")
@@ -272,64 +191,44 @@ class ProcesadorSolicitudes:
         print("DataCenter:", id_dc)
 
     def migrar_vm(self, nodo):
-        # Este método mueve una VM de un DataCenter a otro
-
-        # Leo los datos del XML
         vmid_nodo = nodo.find("vmId")
         origen_nodo = nodo.find("origen")
         destino_nodo = nodo.find("destino")
-
         if vmid_nodo is None or origen_nodo is None or destino_nodo is None:
             print("La instrucción migrarVM está incompleta.")
             return
-
         id_vm = vmid_nodo.text
         id_origen = origen_nodo.text
         id_destino = destino_nodo.text
-
         data_center_origen = None
         data_center_destino = None
         vm_encontrada = None
-
-        # Busco el DataCenter origen y destino
         actual = self.data_centers.inicio
 
         while actual is not None:
             dc = actual.dato
-
             if dc.id == id_origen:
                 data_center_origen = dc
-
             if dc.id == id_destino:
                 data_center_destino = dc
-
             actual = actual.siguiente
 
         if data_center_origen is None:
             print("No se encontró el DataCenter origen:", id_origen)
             return
-
         if data_center_destino is None:
             print("No se encontró el DataCenter destino:", id_destino)
             return
-
-        # Busco la VM dentro del DataCenter origen
         actual_vm = data_center_origen.maquinas_virtuales.inicio
-
         while actual_vm is not None:
             if actual_vm.dato.id == id_vm:
                 vm_encontrada = actual_vm.dato
                 break
             actual_vm = actual_vm.siguiente
-
         if vm_encontrada is None:
             print("No se encontró la VM", id_vm, "en el DataCenter", id_origen)
             return
-
-        # Quito la VM del DataCenter origen
         data_center_origen.eliminar_vm(id_vm)
-
-        # Agrego la VM al DataCenter destino
         data_center_destino.agregar_vm(vm_encontrada)
 
         print("Migración realizada correctamente:")

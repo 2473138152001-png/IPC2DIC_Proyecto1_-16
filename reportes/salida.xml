@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='utf-8'?>
+<cloudSync>
+  <configuracion>
+    <centrosDatos>
+      <centro id="DC001" nombre="DataCenter Principal">
+        <ubicacion>
+          <descripcion>Guatemala City, Guatemala</descripcion>
+          </ubicacion>
+        <capacidad>
+          <cpu>64</cpu>
+          <ram>256</ram>
+          <almacenamiento>500</almacenamiento>
+          </capacidad>
+        <usados>
+          <cpu>12</cpu>
+          <ram>24</ram>
+          <almacenamiento>180</almacenamiento>
+          </usados>
+        <maquinasVirtuales>
+          <vm id="VM001" estado="Activa">
+            <sistemaOperativo>Ubuntu 22.04 LTS</sistemaOperativo>
+            <recursos>
+              <cpu>8</cpu>
+              <ram>16</ram>
+              <almacenamiento>100</almacenamiento>
+              </recursos>
+            <contenedores>
+              <contenedor id="CNT001" estado="Activo">
+                <nombre>WebServer</nombre>
+                <imagen>nginx:latest</imagen>
+                <cpu>0</cpu>
+                <ram>0</ram>
+                </contenedor>
+              </contenedores>
+            </vm>
+          <vm id="VM002" estado="Activa">
+            <sistemaOperativo>Windows Server 2022</sistemaOperativo>
+            <recursos>
+              <cpu>4</cpu>
+              <ram>8</ram>
+              <almacenamiento>80</almacenamiento>
+              </recursos>
+            <contenedores>
+              <contenedor id="CNT002" estado="Activo">
+                <nombre>Database</nombre>
+                <imagen>mysql:8.0</imagen>
+                <cpu>0</cpu>
+                <ram>0</ram>
+                </contenedor>
+              </contenedores>
+            </vm>
+          </maquinasVirtuales>
+        </centro>
+      <centro id="DC002" nombre="DataCenter Respaldo">
+        <ubicacion>
+          <descripcion>Antigua Guatemala, Guatemala</descripcion>
+          </ubicacion>
+        <capacidad>
+          <cpu>32</cpu>
+          <ram>128</ram>
+          <almacenamiento>300</almacenamiento>
+          </capacidad>
+        <usados>
+          <cpu>0</cpu>
+          <ram>0</ram>
+          <almacenamiento>0</almacenamiento>
+          </usados>
+        <maquinasVirtuales />
+        </centro>
+      </centrosDatos>
+    <solicitudes>
+      <solicitud id="REQ002" tipo="Backup" prioridad="5">
+        <descripcion>Solicitud cargada desde XML</descripcion>
+        </solicitud>
+      <solicitud id="REQ001" tipo="Deploy" prioridad="8">
+        <descripcion>Solicitud cargada desde XML</descripcion>
+        </solicitud>
+      </solicitudes>
+    </configuracion>
+  </cloudSync>
