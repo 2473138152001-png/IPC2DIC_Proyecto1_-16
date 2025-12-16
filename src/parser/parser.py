@@ -94,8 +94,9 @@ class ParserXML:
                         cont_id = cont.get("id")
                         nombre = cont.findtext("nombre") or ""
                         imagen = cont.findtext("imagen") or ""
-
-                        c_obj = Contenedor(cont_id, nombre, imagen)
+                        cpu = int(cont.findtext("recursos/cpu") or 0)
+                        ram = int(cont.findtext("recursos/ram") or 0)
+                        c_obj = Contenedor(cont_id, nombre, imagen, cpu, ram)
                         c_obj.vm_asignada = vm_id
 
                         self.contenedores.insertar_final(c_obj)
