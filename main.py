@@ -303,7 +303,7 @@ def guardar_dot_y_png(dot_texto, nombreBase):
    
     prueba = os.system("dot -V")
     if prueba != 0:
-        print("Se creó el .dot pero no se pudo generar el .png (Graphviz no está en PATH)")
+        print("Se creo el .dot pero no se pudo generar el .png (Graphviz no está en PATH)")
         print("DOT:", rutaDot)
         return
 
@@ -314,7 +314,7 @@ def guardar_dot_y_png(dot_texto, nombreBase):
         print("DOT:", rutaDot)
         print("PNG:", rutaPng)
     else:
-        print("Se creó el .dot pero falló la generación del .png")
+        print("Se creo el .dot pero falló la generación del .png")
         print("Comando:", comando)
 
 
@@ -530,21 +530,21 @@ def menu_reportes_graphviz(listaCentros, colaSol, historial):
 
         if op == "1":
             reporte_general(listaCentros, colaSol)
-            registrar_operacion(historial, "Reportes", "Se generó reporte general")
+            registrar_operacion(historial, "Reportes", "Se genero reporte general")
 
         elif op == "2":
             centroId = input("Ingrese el Id del centro (ej: DC001): ")
             reporte_vms_por_centro(listaCentros, centroId)
-            registrar_operacion(historial, "Reportes", "Se generó reporte de Vms por centro: " + str(centroId))
+            registrar_operacion(historial, "Reportes", "Se genero reporte de Vms por centro: " + str(centroId))
 
         elif op == "3":
             vmId = input("Ingrese el Id de la Vm (ej: VM001): ")
             reporte_contenedores_por_vm(listaCentros, vmId)
-            registrar_operacion(historial, "Reportes", "Se generó reporte de contenedores por Vm: " + str(vmId))
+            registrar_operacion(historial, "Reportes", "Se genero reporte de contenedores por Vm: " + str(vmId))
 
         elif op == "4":
             reporte_cola_solicitudes(colaSol)
-            registrar_operacion(historial, "Reportes", "Se generó reporte de cola de solicitudes")
+            registrar_operacion(historial, "Reportes", "Se genero reporte de cola de solicitudes")
 
         elif op == "5":
             reporte_general(listaCentros, colaSol)
@@ -628,7 +628,7 @@ def menu_centros(listaCentros):
                     mejor = dc
                 actual = actual.siguiente
 
-            print("\nCentro con más cpu disponible")
+            print("\nCentro con mas cpu disponible")
             print("Id:", mejor.id)
             print("Nombre:", mejor.nombre)
             print("Ubicación:", mejor.ubicacion)
@@ -839,7 +839,7 @@ def menu_contenedores(listaCentros):
                 cpu = int(input("Cpu requerida: "))
                 ram = int(input("Ram requerida: "))
             except:
-                print("Cpu y Ram deben ser números")
+                print("Cpu y Ram deben ser numeros")
                 continue
 
             vmEncontrada = None
@@ -1015,7 +1015,7 @@ def menu_solicitudes(procesador):
             try:
                 cant = int(input("Cantidad de solicitudes a procesar: "))
             except:
-                print("Debe ingresar un número")
+                print("Debe ingresar un numero")
                 continue
 
             proc, comp, fall = procesador.procesar_solicitudes(cant)
@@ -1140,7 +1140,7 @@ def main():
 
                 datosCargados = True
                 print("Datos cargados correctamente.\n")
-                registrar_operacion(historial, "Carga XML", "Se cargó el archivo: " + str(ruta))
+                registrar_operacion(historial, "Carga XML", "Se cargo el archivo: " + str(ruta))
 
                 # ejecutar instrucciones
                 print("\n=== Ejecutando instrucciones ===")
@@ -1151,11 +1151,11 @@ def main():
 
                     if tipoInst == "crearVM":
                         print("Instrucción crearVm detectada (en este parser solo se registró el tipo)")
-                        registrar_operacion(historial, "Instrucción", "Se detectó crearVm")
+                        registrar_operacion(historial, "Instruccion", "Se detecto crearVm")
 
                     elif tipoInst == "migrarVM":
                         print("Instrucción migrarVm detectada (en este parser solo se registró el tipo)")
-                        registrar_operacion(historial, "Instrucción", "Se detectó migrarVm")
+                        registrar_operacion(historial, "Instruccion", "Se detectó migrarVm")
 
                     elif tipoInst == "procesarSolicitudes":
                         # procesar todas las que existan en cola (como lo hacías)

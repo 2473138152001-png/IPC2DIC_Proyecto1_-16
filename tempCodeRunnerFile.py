@@ -107,7 +107,7 @@ def menu_historial(historial):
         elif op == "2":
             palabra = input("Palabra a buscar: ").strip()
             if palabra == "":
-                print("Búsqueda vacía.")
+                print("Busqueda vacia.")
                 continue
 
             actual = historial.inicio
@@ -135,7 +135,7 @@ def menu_historial(historial):
             break
 
         else:
-            print("Opción inválida.")
+            print("Opcion invalida.")
 
 
 def mostrar_menu():
@@ -180,7 +180,7 @@ def _guardar_dot_y_png(dot_text, nombre_base):
 
     prueba = os.system("dot -V")
     if prueba != 0:
-        print("Se creó el .dot pero NO se pudo generar el .png (Graphviz no está en PATH).")
+        print("Se creo el .dot pero NO se pudo generar el .png (Graphviz no está en PATH).")
         print("DOT:", ruta_dot)
         return
 
@@ -192,7 +192,7 @@ def _guardar_dot_y_png(dot_text, nombre_base):
         print("DOT:", ruta_dot)
         print("PNG:", ruta_png)
     else:
-        print("Se creó el .dot pero NO se pudo generar el .png.")
+        print("Se creo el .dot pero NO se pudo generar el .png.")
         print("Comando:", comando)
 
 
@@ -585,7 +585,7 @@ def main():
 
     while True:
         mostrar_menu()
-        opcion = input("Seleccione una opción: ")
+        opcion = input("Seleccione una opcion: ")
 
         # ==========================
         # ✅ OPCIÓN 1: CARGAR XML
@@ -686,7 +686,7 @@ def main():
                 datos_cargados = True
                 print("Datos cargados correctamente.\n")
 
-                registrar_operacion(historial, "CARGA_XML", f"Se cargó el archivo: {ruta}")
+                registrar_operacion(historial, "CARGA_XML", f"Se cargo el archivo: {ruta}")
 
                 # 6) Ejecutar instrucciones
                 print("\n=== Ejecutando Instrucciones ===")

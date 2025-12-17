@@ -26,7 +26,7 @@ class ParserXML:
             root = tree.getroot()
 
             if root.tag != "cloudSync":
-                print("El archivo no es un cloudSync válido.")
+                print("El archivo no es un cloudSync valido.")
                 return False
 
             configuracion = root.find("configuracion")
