@@ -365,7 +365,7 @@ def reporte_general(listaCentros, colaSol):
         nodoCentro = nodoCentro.siguiente
 
 
-    # Cola si hay
+   
     if colaSol is not None:
         if colaSol.inicio is not None:
             dot += "\nsubgraph cluster_cola {\n"
@@ -653,7 +653,7 @@ def menu_vms(listaCentros):
 
         if op == "1":
             buscada = input("Id de la Vm a buscar: life's ")
-            # si escriben cualquier cosa, igual se busca
+            
             vmEncontrada = None
             dcDueno = None
 
@@ -1158,7 +1158,7 @@ def main():
                         registrar_operacion(historial, "Instruccion", "Se detectó migrarVm")
 
                     elif tipoInst == "procesarSolicitudes":
-                        # procesar todas las que existan en cola (como lo hacías)
+                        # procesar todas las que existan en cola 
                         cant = 0
                         aux = procesador.cola_solicitudes.inicio
                         while aux is not None:

@@ -1,0 +1,390 @@
+
+<cloudSync>
+<configuracion>
+<centrosDatos>
+<centro id="DC001" nombre="DataCenter Norte">
+<ubicacion>
+<pais>Guatemala</pais>
+<ciudad>Guatemala City</ciudad>
+</ubicacion>
+<capacidad>
+<cpu>128</cpu>
+<ram>512</ram>
+<almacenamiento>1000</almacenamiento>
+</capacidad>
+</centro>
+<centro id="DC002" nombre="DataCenter Sur">
+<ubicacion>
+<pais>Guatemala</pais>
+<ciudad>Escuintla</ciudad>
+</ubicacion>
+<capacidad>
+<cpu>256</cpu>
+<ram>1024</ram>
+<almacenamiento>2000</almacenamiento>
+</capacidad>
+</centro>
+<centro id="DC003" nombre="DataCenter Occidente">
+<ubicacion>
+<pais>Guatemala</pais>
+<ciudad>Quetzaltenango</ciudad>
+</ubicacion>
+<capacidad>
+<cpu>192</cpu>
+<ram>768</ram>
+<almacenamiento>1500</almacenamiento>
+</capacidad>
+</centro>
+<centro id="DC004" nombre="DataCenter Oriente">
+<ubicacion>
+<pais>Guatemala</pais>
+<ciudad>Zacapa</ciudad>
+</ubicacion>
+<capacidad>
+<cpu>96</cpu>
+<ram>384</ram>
+<almacenamiento>800</almacenamiento>
+</capacidad>
+</centro>
+<centro id="DC005" nombre="DataCenter Central">
+<ubicacion>
+<pais>Guatemala</pais>
+<ciudad>Antigua Guatemala</ciudad>
+</ubicacion>
+<capacidad>
+<cpu>320</cpu>
+<ram>1536</ram>
+<almacenamiento>3000</almacenamiento>
+</capacidad>
+</centro>
+</centrosDatos>
+<maquinasVirtuales>
+<vm id="VM001" centroAsignado="DC001">
+<sistemaOperativo>Ubuntu 22.04 LTS</sistemaOperativo>
+<recursos>
+<cpu>8</cpu>
+<ram>16</ram>
+<almacenamiento>100</almacenamiento>
+</recursos>
+<ip>192.168.1.10</ip>
+<contenedores>
+<contenedor id="CNT001">
+<nombre>WebServer</nombre>
+<imagen>nginx:latest</imagen>
+<recursos>
+<cpu>25</cpu>
+<ram>512</ram>
+</recursos>
+<puerto>8080</puerto>
+</contenedor>
+<contenedor id="CNT002">
+<nombre>Database</nombre>
+<imagen>mysql:8.0</imagen>
+<recursos>
+<cpu>40</cpu>
+<ram>1024</ram>
+</recursos>
+<puerto>3306</puerto>
+</contenedor>
+</contenedores>
+</vm>
+<vm id="VM002" centroAsignado="DC001">
+<sistemaOperativo>Windows Server 2022</sistemaOperativo>
+<recursos>
+<cpu>16</cpu>
+<ram>32</ram>
+<almacenamiento>200</almacenamiento>
+</recursos>
+<ip>192.168.1.11</ip>
+<contenedores>
+<contenedor id="CNT003">
+<nombre>AppServer</nombre>
+<imagen>dotnet:6.0</imagen>
+<recursos>
+<cpu>50</cpu>
+<ram>2048</ram>
+</recursos>
+<puerto>5000</puerto>
+</contenedor>
+</contenedores>
+</vm>
+<vm id="VM003" centroAsignado="DC002">
+<sistemaOperativo>Debian 11</sistemaOperativo>
+<recursos>
+<cpu>12</cpu>
+<ram>24</ram>
+<almacenamiento>150</almacenamiento>
+</recursos>
+<ip>192.168.2.10</ip>
+<contenedores>
+<contenedor id="CNT004">
+<nombre>Cache</nombre>
+<imagen>redis:7.0</imagen>
+<recursos>
+<cpu>20</cpu>
+<ram>512</ram>
+</recursos>
+<puerto>6379</puerto>
+</contenedor>
+<contenedor id="CNT005">
+<nombre>MessageQueue</nombre>
+<imagen>rabbitmq:3.11</imagen>
+<recursos>
+<cpu>30</cpu>
+<ram>1024</ram>
+</recursos>
+<puerto>5672</puerto>
+</contenedor>
+<contenedor id="CNT006">
+<nombre>Monitoring</nombre>
+<imagen>prometheus:latest</imagen>
+<recursos>
+<cpu>15</cpu>
+<ram>768</ram>
+</recursos>
+<puerto>9090</puerto>
+</contenedor>
+</contenedores>
+</vm>
+<vm id="VM004" centroAsignado="DC002">
+<sistemaOperativo>CentOS Stream 9</sistemaOperativo>
+<recursos>
+<cpu>24</cpu>
+<ram>48</ram>
+<almacenamiento>300</almacenamiento>
+</recursos>
+<ip>192.168.2.11</ip>
+<contenedores>
+<contenedor id="CNT007">
+<nombre>BigDataProcessor</nombre>
+<imagen>apache/spark:3.3.0</imagen>
+<recursos>
+<cpu>60</cpu>
+<ram>4096</ram>
+</recursos>
+<puerto>8081</puerto>
+</contenedor>
+</contenedores>
+</vm>
+<vm id="VM005" centroAsignado="DC003">
+<sistemaOperativo>Ubuntu 20.04 LTS</sistemaOperativo>
+<recursos>
+<cpu>4</cpu>
+<ram>8</ram>
+<almacenamiento>80</almacenamiento>
+</recursos>
+<ip>192.168.3.10</ip>
+<contenedores>
+<contenedor id="CNT008">
+<nombre>LoadBalancer</nombre>
+<imagen>haproxy:2.7</imagen>
+<recursos>
+<cpu>30</cpu>
+<ram>512</ram>
+</recursos>
+<puerto>80</puerto>
+</contenedor>
+</contenedores>
+</vm>
+<vm id="VM006" centroAsignado="DC003">
+<sistemaOperativo>Fedora 37</sistemaOperativo>
+<recursos>
+<cpu>8</cpu>
+<ram>16</ram>
+<almacenamiento>120</almacenamiento>
+</recursos>
+<ip>192.168.3.11</ip>
+<contenedores>
+<contenedor id="CNT009">
+<nombre>APIGateway</nombre>
+<imagen>kong:3.1</imagen>
+<recursos>
+<cpu>35</cpu>
+<ram>1024</ram>
+</recursos>
+<puerto>8000</puerto>
+</contenedor>
+<contenedor id="CNT010">
+<nombre>AuthService</nombre>
+<imagen>keycloak:20.0</imagen>
+<recursos>
+<cpu>25</cpu>
+<ram>768</ram>
+</recursos>
+<puerto>8443</puerto>
+</contenedor>
+</contenedores>
+</vm>
+<vm id="VM007" centroAsignado="DC004">
+<sistemaOperativo>Rocky Linux 9</sistemaOperativo>
+<recursos>
+<cpu>6</cpu>
+<ram>12</ram>
+<almacenamiento>100</almacenamiento>
+</recursos>
+<ip>192.168.4.10</ip>
+<contenedores>
+<contenedor id="CNT011">
+<nombre>FileServer</nombre>
+<imagen>nextcloud:25</imagen>
+<recursos>
+<cpu>40</cpu>
+<ram>2048</ram>
+</recursos>
+<puerto>443</puerto>
+</contenedor>
+</contenedores>
+</vm>
+<vm id="VM008" centroAsignado="DC005">
+<sistemaOperativo>Ubuntu 22.04 LTS</sistemaOperativo>
+<recursos>
+<cpu>32</cpu>
+<ram>64</ram>
+<almacenamiento>500</almacenamiento>
+</recursos>
+<ip>192.168.5.10</ip>
+<contenedores>
+<contenedor id="CNT012">
+<nombre>DataWarehouse</nombre>
+<imagen>postgres:15</imagen>
+<recursos>
+<cpu>70</cpu>
+<ram>8192</ram>
+</recursos>
+<puerto>5432</puerto>
+</contenedor>
+<contenedor id="CNT013">
+<nombre>Analytics</nombre>
+<imagen>elasticsearch:8.6</imagen>
+<recursos>
+<cpu>50</cpu>
+<ram>4096</ram>
+</recursos>
+<puerto>9200</puerto>
+</contenedor>
+</contenedores>
+</vm>
+</maquinasVirtuales>
+<solicitudes>
+<solicitud id="REQ001">
+<cliente>Empresa XYZ Corp</cliente>
+<tipo>Deploy</tipo>
+<prioridad>8</prioridad>
+<recursos>
+<cpu>4</cpu>
+<ram>8</ram>
+<almacenamiento>50</almacenamiento>
+</recursos>
+<tiempoEstimado>30</tiempoEstimado>
+</solicitud>
+<solicitud id="REQ002">
+<cliente>Startup ABC Tech</cliente>
+<tipo>Backup</tipo>
+<prioridad>5</prioridad>
+<recursos>
+<cpu>16</cpu>
+<ram>64</ram>
+<almacenamiento>200</almacenamiento>
+</recursos>
+<tiempoEstimado>120</tiempoEstimado>
+</solicitud>
+<solicitud id="REQ003">
+<cliente>Universidad San Carlos</cliente>
+<tipo>Backup</tipo>
+<prioridad>9</prioridad>
+<recursos>
+<cpu>2</cpu>
+<ram>4</ram>
+<almacenamiento>500</almacenamiento>
+</recursos>
+<tiempoEstimado>180</tiempoEstimado>
+</solicitud>
+<solicitud id="REQ004">
+<cliente>E-Commerce Global</cliente>
+<tipo>Deploy</tipo>
+<prioridad>10</prioridad>
+<recursos>
+<cpu>8</cpu>
+<ram>16</ram>
+<almacenamiento>100</almacenamiento>
+</recursos>
+<tiempoEstimado>45</tiempoEstimado>
+</solicitud>
+<solicitud id="REQ005">
+<cliente>Fintech Solutions</cliente>
+<tipo>Deploy</tipo>
+<prioridad>7</prioridad>
+<recursos>
+<cpu>12</cpu>
+<ram>32</ram>
+<almacenamiento>150</almacenamiento>
+</recursos>
+<tiempoEstimado>60</tiempoEstimado>
+</solicitud>
+<solicitud id="REQ006">
+<cliente>Gaming Studio Pro</cliente>
+<tipo>Deploy</tipo>
+<prioridad>6</prioridad>
+<recursos>
+<cpu>24</cpu>
+<ram>96</ram>
+<almacenamiento>300</almacenamiento>
+</recursos>
+<tiempoEstimado>90</tiempoEstimado>
+</solicitud>
+<solicitud id="REQ007">
+<cliente>HealthCare Systems</cliente>
+<tipo>Backup</tipo>
+<prioridad>10</prioridad>
+<recursos>
+<cpu>4</cpu>
+<ram>8</ram>
+<almacenamiento>1000</almacenamiento>
+</recursos>
+<tiempoEstimado>240</tiempoEstimado>
+</solicitud>
+<solicitud id="REQ008">
+<cliente>Social Media Inc</cliente>
+<tipo>Scale</tipo>
+<prioridad>8</prioridad>
+<recursos>
+<cpu>16</cpu>
+<ram>48</ram>
+<almacenamiento>200</almacenamiento>
+</recursos>
+<tiempoEstimado>75</tiempoEstimado>
+</solicitud>
+</solicitudes>
+</configuracion>
+<instrucciones>
+<instruccion tipo="crearVM">
+<id>VM010</id>
+<centro>DC001</centro>
+<so>Windows Server 2022</so>
+<cpu>4</cpu>
+<ram>8</ram>
+<almacenamiento>80</almacenamiento>
+</instruccion>
+<instruccion tipo="crearVM">
+<id>VM011</id>
+<centro>DC005</centro>
+<so>Ubuntu 22.04 LTS</so>
+<cpu>8</cpu>
+<ram>16</ram>
+<almacenamiento>120</almacenamiento>
+</instruccion>
+<instruccion tipo="migrarVM">
+<vmId>VM001</vmId>
+<centroOrigen>DC001</centroOrigen>
+<centroDestino>DC002</centroDestino>
+</instruccion>
+<instruccion tipo="migrarVM">
+<vmId>VM005</vmId>
+<centroOrigen>DC003</centroOrigen>
+<centroDestino>DC005</centroDestino>
+</instruccion>
+<instruccion tipo="procesarSolicitudes">
+<cantidad>5</cantidad>
+</instruccion>
+</instrucciones>
+</cloudSync>
